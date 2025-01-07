@@ -124,12 +124,12 @@
                         android:text="@string/btn_ped_load_clear_work_key" />
 
                     <Button
-                        android:visibility="invisible"
+                        android:id="@+id/btn_deleteKey"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:text="" />
+                        android:text="DELETE KEY" />
                 </LinearLayout>
 
                 <LinearLayout

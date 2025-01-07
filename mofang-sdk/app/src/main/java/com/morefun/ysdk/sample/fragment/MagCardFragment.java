@@ -50,6 +50,8 @@ public class MagCardFragment extends Fragment {
             magCardReader.setIsCheckLrc(false);
 
             Bundle bundle = new Bundle();
+            bundle.putInt(DukptCalcObj.Param.DUKPT_KEY_INDEX, 0);
+
             magCardReader.searchCard(new OnSearchMagCardListener.Stub() {
                 @Override
                 public void onSearchResult(int ret, MagCardInfoEntity magCardInfoEntity) throws RemoteException {

@@ -13,70 +13,115 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RadioGroup
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/textView1"
-                android:layout_marginLeft="21dp"
-                android:layout_toRightOf="@+id/textView1"
-                android:orientation="vertical">
-
-                <RadioButton
-                    android:id="@+id/rb_psamSlot1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="PSAM SLOT1"
-                    android:textSize="@dimen/size_text" />
-
-                <RadioButton
-                    android:id="@+id/rb_psamSlot2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PSAM SLOT2"
-                    android:textSize="@dimen/size_text" />
-
-                <RadioButton
-                    android:id="@+id/rb_psamSlot3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PSAM SLOT3"
-                    android:textSize="@dimen/size_text"
-                    android:visibility="gone" />
-
-            </RadioGroup>
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_layout"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/btn_psamCard"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:text="@string/btn_psam_card"
-                    android:textSize="@dimen/size_text" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_layout"
+                    android:text="PSAM SLOT"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/size_text">
 
-            </LinearLayout>
+                </TextView>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical"
+                    android:orientation="horizontal">
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    <com.morefun.ysdk.sample.view.ClearEditText
+                        android:id="@+id/et_psamSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_layout"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_edittext"
+                        android:drawablePadding="@dimen/margin_layout"
+                        android:gravity="center|left"
+                        android:hint="Please input psam slot"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="8"
+                        android:text="3"
+                        android:padding="@dimen/margin_layout"
+                        android:singleLine="true"
+                        android:textColor="@color/gray"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/size_text" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_layout"
+                    android:text="APDU"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/size_text">
+
+                </TextView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.morefun.ysdk.sample.view.ClearEditText
+                        android:id="@+id/et_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_layout"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_edittext"
+                        android:drawablePadding="@dimen/margin_layout"
+                        android:gravity="center|left"
+                        android:hint="apdu"
+                        android:imeOptions="actionNext"
+                        android:padding="@dimen/margin_layout"
+                        android:text="00A4040008A00000033301010100"
+                        android:textColor="@color/gray"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/size_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        style="@style/ButtonStyle"
+                        android:id="@+id/btn_psamCard"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="PSAM CARD" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_tip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text=""
-                    android:textSize="@dimen/size_text" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:text="You can use psam card slots such as 3"
+                    android:textSize="18sp" />
 
-            </ScrollView>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

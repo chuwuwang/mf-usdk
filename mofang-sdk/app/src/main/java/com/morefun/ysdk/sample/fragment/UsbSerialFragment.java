@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.text.TextUtils;
@@ -20,7 +19,6 @@ import androidx.fragment.app.Fragment;
 
 import com.morefun.yapi.ServiceResult;
 import com.morefun.yapi.device.serialport.SerialPort;
-import com.morefun.yapi.device.serialport.SerialPortDriver;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;

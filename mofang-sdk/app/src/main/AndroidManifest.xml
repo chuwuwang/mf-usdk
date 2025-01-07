@@ -13,6 +13,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!--Bind YSDK services require this permission if you targetSDKVersion is higher then 30-->
+    <queries>
+        <package android:name="com.morefun.ysdk"/>
+    </queries>
+
     <application
         android:name="com.morefun.ysdk.sample.MyApplication"
         android:allowBackup="true"
@@ -25,6 +30,7 @@
         tools:replace="android:icon">
         <activity
             android:name="com.morefun.ysdk.sample.activity.MainActivity"
+            android:exported="true"
             android:screenOrientation="sensor">
 
             <intent-filter>
@@ -39,7 +45,8 @@
 
         <activity android:name=".zxing.CaptureActivity" />
 
-        <receiver android:name=".receiver.PackageInstallReceiver">
+        <receiver android:name=".receiver.PackageInstallReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />

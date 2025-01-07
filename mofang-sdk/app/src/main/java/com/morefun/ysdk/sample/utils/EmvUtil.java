@@ -122,13 +122,13 @@ public class EmvUtil {
 
         bundle.putString(EmvTransDataConstrants.TRANSDATE, date.substring(0, 6));
         bundle.putString(EmvTransDataConstrants.TRANSTIME, date.substring(6, 12));
-        bundle.putString(EmvTransDataConstrants.SEQNO, "00001");
+//        bundle.putString(EmvTransDataConstrants.SEQNO, "0001");
         bundle.putString(EmvTransDataConstrants.TRANSAMT, amount);
         bundle.putString(EmvTransDataConstrants.MERNAME, "MOREFUN");
         bundle.putString(EmvTransDataConstrants.MERID, "488923");
         bundle.putString(EmvTransDataConstrants.TERMID, "500");
 
-        bundle.putStringArrayList(EmvTransDataConstrants.TERMINAL_TLVS, StringUitls.createArrayList("DF81180170", "DF81190118"));
+        bundle.putStringArrayList(EmvTransDataConstrants.TERMINAL_TLVS, StringUitls.createArrayList("DF840B06000000000001", "DF81190118"));
 
         return bundle;
     }

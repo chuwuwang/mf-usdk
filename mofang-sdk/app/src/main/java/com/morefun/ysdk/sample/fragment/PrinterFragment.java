@@ -1,5 +1,7 @@
 package com.morefun.ysdk.sample.fragment;
 
+import static com.morefun.ysdk.sample.utils.PrinterUtil.makeLineText;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +14,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.RemoteException;
 import android.text.Html;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TableLayout;
@@ -42,17 +42,13 @@ import com.morefun.ysdk.sample.utils.ToastUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.morefun.ysdk.sample.utils.PrinterUtil.makeLineText;
 
 public class PrinterFragment extends Fragment {
     @BindView(R.id.rb_light)

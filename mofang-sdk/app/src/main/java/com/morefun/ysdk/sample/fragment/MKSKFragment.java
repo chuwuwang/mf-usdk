@@ -1,7 +1,9 @@
 package com.morefun.ysdk.sample.fragment;
 
+import static com.morefun.yapi.device.pinpad.TDesKeyObj.KeyTypeEnum.DES_WK_MAC;
+import static com.morefun.yapi.device.pinpad.TDesKeyObj.OperEnum.DELETE_KEY;
+
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
@@ -13,8 +15,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.morefun.yapi.ServiceResult;
-import com.morefun.yapi.device.pinpad.CheckKeyEnum;
-import com.morefun.yapi.device.pinpad.CheckKeyObj;
 import com.morefun.yapi.device.pinpad.DesAlgorithmType;
 import com.morefun.yapi.device.pinpad.DesCalcObj;
 import com.morefun.yapi.device.pinpad.DesLoadObj;
@@ -30,14 +30,12 @@ import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;
 import com.morefun.ysdk.sample.utils.DialogUtils;
 import com.morefun.ysdk.sample.utils.HexUtil;
+import com.morefun.ysdk.sample.utils.StringUitls;
 import com.morefun.ysdk.sample.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.morefun.yapi.device.pinpad.TDesKeyObj.KeyTypeEnum.DES_WK_MAC;
-import static com.morefun.yapi.device.pinpad.TDesKeyObj.OperEnum.DELETE_KEY;
 
 public class MKSKFragment extends Fragment {
     @BindView(R.id.tv_tip)
@@ -337,11 +335,11 @@ public class MKSKFragment extends Fragment {
                 bundle.putBoolean(PinPadConstrants.COMMON_SUPPORT_KEYVOICE, true);
                 bundle.putBoolean(PinPadConstrants.COMMON_SUPPORT_BYPASS, false);
                 bundle.putBoolean(PinPadConstrants.COMMON_IS_RANDOM, true);
-                if (Build.MODEL.equals("MF960")) {
+                if (StringUitls.getDeviceModel().contains("MF960")) {
                     bundle.putBoolean(PinPadConstrants.COMMON_IS_PHYSICAL_KEYBOARD, true);
                 }
 
-                if (Build.MODEL.equals("H9PRO")) {
+                if (StringUitls.getDeviceModel().contains("H9PRO")) {
                     bundle.putBoolean(PinPadConstrants.COMMON_IS_PHYSICAL_KEYBOARD, true);
                 }
 
@@ -368,6 +366,8 @@ public class MKSKFragment extends Fragment {
                     DeviceHelper.getPinpad().inputOnlinePin(bundle, panBlock, WORK_KEY_INDEX, PinAlgorithmMode.ISO9564FMT1, new OnPinPadInputListener.Stub() {
                         @Override
                         public void onInputResult(int ret, byte[] pinBlock, String ksn) throws RemoteException {
+                            Log.w(TAG, "onInputResult:" + ret);
+                            Log.w(TAG, "pinBlock:" + BytesUtil.bytes2HexString(pinBlock));
                             if (ret == ServiceResult.TimeOut) {
                                 DialogUtils.showAlertDialog(getActivity(), "Timeout");
                             } else {
@@ -379,6 +379,9 @@ public class MKSKFragment extends Fragment {
                         @Override
                         public void onSendKey(byte keyCode) throws RemoteException {
                             Log.w(TAG, "onSendKey:" + keyCode);
+                            if (keyCode == (byte) ServiceResult.PinPad_Input_Cancel) {
+                                Log.w(TAG, "Cancel");
+                            }
                         }
 
                     });

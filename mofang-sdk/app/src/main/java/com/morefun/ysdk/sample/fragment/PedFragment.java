@@ -15,11 +15,9 @@ import androidx.fragment.app.Fragment;
 import com.morefun.yapi.ServiceResult;
 import com.morefun.yapi.device.ped.KeyType;
 import com.morefun.yapi.device.ped.PedCipher;
-import com.morefun.yapi.device.pinpad.DesMode;
 import com.morefun.yapi.device.pinpad.OnPinPadInputListener;
 import com.morefun.yapi.device.pinpad.PinAlgorithmMode;
 import com.morefun.yapi.device.pinpad.PinPadConstrants;
-import com.morefun.yapi.device.pinpad.PinPadType;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;
@@ -60,7 +58,7 @@ public class PedFragment extends Fragment {
         return view;
     }
 
-    @OnClick({R.id.btn_login, R.id.btn_input_pin, R.id.btn_format, R.id.btn_loadTEK, R.id.btn_checkKey,
+    @OnClick({R.id.btn_login, R.id.btn_input_pin, R.id.btn_format, R.id.btn_loadTEK, R.id.btn_checkKey, R.id.btn_deleteKey,
             R.id.btn_loadCipherMainKey, R.id.btn_loadClearMainKey, R.id.btn_loadWorkKey, R.id.btn_loadPlainWorkKey,
             R.id.btn_calcMac, R.id.btn_calcKcv, R.id.btn_des, R.id.btn_loadRSAKey, R.id.btn_readRSAKey, R.id.btn_rsaDecrypt})
     public void onClick(View view) {
@@ -73,6 +71,9 @@ public class PedFragment extends Fragment {
                 break;
             case R.id.btn_format:
                 format();
+                break;
+            case R.id.btn_deleteKey:
+                deleteKey();
                 break;
             case R.id.btn_loadTEK:
                 loadTEK();
@@ -150,11 +151,11 @@ public class PedFragment extends Fragment {
         bundle.putBoolean(PinPadConstrants.COMMON_SUPPORT_KEYVOICE, true);
         bundle.putBoolean(PinPadConstrants.COMMON_SUPPORT_BYPASS, false);
         bundle.putBoolean(PinPadConstrants.COMMON_IS_RANDOM, false);
-        if (Build.MODEL.equals("MF960")) {
+        if (Build.MODEL.contains("MF960")) {
             bundle.putBoolean(PinPadConstrants.COMMON_IS_PHYSICAL_KEYBOARD, true);
         }
 
-        if (Build.MODEL.equals("H9PRO")) {
+        if (Build.MODEL.contains("H9PRO")) {
             bundle.putBoolean(PinPadConstrants.COMMON_IS_PHYSICAL_KEYBOARD, true);
         }
 
@@ -194,6 +195,16 @@ public class PedFragment extends Fragment {
         try {
             boolean ret = DeviceHelper.getDeviceService().getPed().format();
             showResult(ret ? "Format Success" : "Format Fail!");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteKey() {
+        try {
+            int keyType = KeyType.PIN_KEY;
+            int ret = DeviceHelper.getDeviceService().getPed().deleteKey(PIN_KEY_INDEX, keyType);
+            showResult(ret == 0 ? "Delete Success" : "Delete Fail!");
         } catch (RemoteException e) {
             e.printStackTrace();
         }

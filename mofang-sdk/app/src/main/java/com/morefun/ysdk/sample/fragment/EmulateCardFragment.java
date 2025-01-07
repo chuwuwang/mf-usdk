@@ -21,7 +21,7 @@ public class EmulateCardFragment extends Fragment {
     @BindView(R.id.tv_tip)
     TextView tvTip;
 
-    private final String TAG = CpuCardFragment.class.getName();
+    private final String TAG = EmulateCardFragment.class.getName();
     private boolean bStop = false;
 
     @Override

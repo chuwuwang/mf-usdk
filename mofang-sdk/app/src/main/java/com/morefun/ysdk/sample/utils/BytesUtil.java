@@ -319,4 +319,28 @@ public class BytesUtil {
         }
         return tmp;
     }
+
+    public static byte[] first2Last(byte[] buf) {
+        byte temp;
+        byte tmp[] = new byte[8];
+
+        for (int i = 0; i < 8; i++) {
+            temp = buf[0];
+            for (int j = 0; j < 7; j++) {
+                tmp[j] = buf[j + 1];
+            }
+            tmp[7] = temp;
+        }
+        return tmp;
+
+    }
+
+    public static byte[] last2First(byte[] buf) {
+        byte tmp[] = new byte[8];
+        tmp[0] = buf[7];
+        for (int j = 1; j < 8; j++) {
+            tmp[j] = buf[j - 1];
+        }
+        return tmp;
+    }
 }

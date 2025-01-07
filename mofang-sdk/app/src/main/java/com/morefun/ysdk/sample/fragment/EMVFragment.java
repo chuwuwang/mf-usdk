@@ -2,7 +2,6 @@ package com.morefun.ysdk.sample.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
@@ -13,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.fragment.app.Fragment;
+
 import com.morefun.yapi.ServiceResult;
 import com.morefun.yapi.device.pinpad.DispTextMode;
 import com.morefun.yapi.device.pinpad.OnPinPadInputListener;
@@ -43,12 +44,15 @@ import com.morefun.ysdk.sample.utils.CardUtil;
 import com.morefun.ysdk.sample.utils.DialogUtils;
 import com.morefun.ysdk.sample.utils.EmvUtil;
 import com.morefun.ysdk.sample.utils.HexUtil;
+import com.morefun.ysdk.sample.utils.StringUitls;
 import com.morefun.ysdk.sample.utils.TlvDataList;
 import com.morefun.ysdk.sample.utils.ToastUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -404,11 +408,11 @@ public class EMVFragment extends Fragment {
         byte[] panBlock = pan.getBytes();
         Bundle bundle = new Bundle();
         bundle.putBoolean(PinPadConstrants.COMMON_IS_RANDOM, false);
-        if (Build.MODEL.equals("MF960")) {
+        if (StringUitls.getDeviceModel().contains("MF960")) {
             bundle.putBoolean(PinPadConstrants.COMMON_IS_PHYSICAL_KEYBOARD, true);
         }
 
-        if (Build.MODEL.equals("H9PRO")) {
+        if (StringUitls.getDeviceModel().contains("H9PRO")) {
             bundle.putBoolean(PinPadConstrants.COMMON_IS_PHYSICAL_KEYBOARD, true);
         }
         bundle.putString(PinPadConstrants.TITLE_HEAD_CONTENT, "Please input the online pin \n " +
@@ -540,6 +544,7 @@ public class EMVFragment extends Fragment {
                         showResult(builder.toString());
                     }
                     stopSearch();
+                    endEMV();
                 }
             }, 60, new Bundle());
             return;

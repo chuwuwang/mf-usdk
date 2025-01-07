@@ -5,13 +5,10 @@ import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
+import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
-import com.morefun.yapi.card.cpu.CPUCardHandler;
-import com.morefun.yapi.device.reader.icc.IccCardReader;
-import com.morefun.yapi.device.reader.icc.IccReaderSlot;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.DialogUtils;
@@ -25,11 +22,13 @@ import butterknife.OnClick;
 public class PSAMCardFragment extends Fragment {
     private final String TAG = PSAMCardFragment.class.getName();
 
-    @BindView(R.id.rb_psamSlot1)
-    RadioButton rb_psamSlot1;
+    @BindView(R.id.et_psamSlot)
+    EditText et_psamSlot;
 
-    @BindView(R.id.rb_psamSlot2)
-    RadioButton rb_psamSlot2;
+    @BindView(R.id.et_data)
+    EditText et_data;
+
+    private int mSlot = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,42 +47,39 @@ public class PSAMCardFragment extends Fragment {
     }
 
     private void psamCard() {
+        try {
+            mSlot = Integer.parseInt(et_psamSlot.getText().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtils.show(getContext(), e.getMessage());
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    int slot = IccReaderSlot.PSAMSlOT1;
-                    if (rb_psamSlot1.isChecked()) {
-                        slot = IccReaderSlot.PSAMSlOT1;
-                    } else if (rb_psamSlot2.isChecked()) {
-                        slot = IccReaderSlot.PSAMSlOT2;
-                    }
-                    exchangeCmd(slot);
+                    exchangeCmd(mSlot);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         }).start();
     }
 
     private void exchangeCmd(int slot) throws RemoteException {
-        IccCardReader cardReader = DeviceHelper.getIccCardReader(slot);
-        CPUCardHandler cpuCardHandler = DeviceHelper.getCpuCardHandler(cardReader);
         try {
-            String cmd = "00A4040008A00000033301010100";
+            DeviceHelper.getPSAM().select((byte) slot);
 
-            if (cpuCardHandler == null) {
-                ToastUtils.show(getContext(), "Cpu Card Handler Is Null");
-                return;
-            }
+            String cmd = et_data.getText().toString();
+
             DialogUtils.showProgressDialog(getActivity(), "Reading Card...");
 
-            cpuCardHandler.setPowerOff();
+            DeviceHelper.getPSAM().powerOff();
 
             byte[] atr = new byte[64];
-            int artRstLength = cpuCardHandler.setPowerOn(atr);
-            if (0 == artRstLength) {
+            boolean powerOnResult = DeviceHelper.getPSAM().powerOn(atr);
+            if (!powerOnResult) {
                 DialogUtils.dismissProgressDialog(getActivity());
                 ToastUtils.show(getContext(), "Power On Fail!");
                 return;
@@ -91,7 +87,7 @@ public class PSAMCardFragment extends Fragment {
 
             byte[] cmdBytes = HexUtil.hexStringToByte(cmd);
             byte[] tmp = new byte[256];
-            int ret = cpuCardHandler.exchangeCmd(tmp, cmdBytes, cmdBytes.length);
+            int ret = DeviceHelper.getPSAM().exchangeCmd(tmp, cmdBytes, cmdBytes.length);
 
             DialogUtils.dismissProgressDialog(getActivity());
             if (ret > 0) {
@@ -101,8 +97,10 @@ public class PSAMCardFragment extends Fragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            DialogUtils.dismissProgressDialog(getActivity());
+            ToastUtils.show(getContext(), e.getMessage());
         } finally {
-            cpuCardHandler.setPowerOff();
+            DeviceHelper.getPSAM().powerOff();
         }
     }
 }

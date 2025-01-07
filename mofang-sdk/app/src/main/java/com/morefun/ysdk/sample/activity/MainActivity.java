@@ -20,11 +20,11 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.morefun.nysdk.sample.fragment.CpuCardFragment;
 import com.morefun.ysdk.sample.MyApplication;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.fragment.AT24CxxCardFragment;
 import com.morefun.ysdk.sample.fragment.BeepFragment;
-import com.morefun.ysdk.sample.fragment.CpuCardFragment;
 import com.morefun.ysdk.sample.fragment.DUKPTFragment;
 import com.morefun.ysdk.sample.fragment.DeviceFragment;
 import com.morefun.ysdk.sample.fragment.EMVFragment;
@@ -33,8 +33,9 @@ import com.morefun.ysdk.sample.fragment.EmulateCardFragment;
 import com.morefun.ysdk.sample.fragment.FelicaFragment;
 import com.morefun.ysdk.sample.fragment.LedFragment;
 import com.morefun.ysdk.sample.fragment.LoginFragment;
-import com.morefun.ysdk.sample.fragment.M0CardFragment;
 import com.morefun.ysdk.sample.fragment.M1CardFragment;
+import com.morefun.ysdk.sample.fragment.MFULCCardFragment;
+import com.morefun.ysdk.sample.fragment.MFULEv1CardFragment;
 import com.morefun.ysdk.sample.fragment.MKSKFragment;
 import com.morefun.ysdk.sample.fragment.MagCardFragment;
 import com.morefun.ysdk.sample.fragment.NTagCardFragment;
@@ -48,6 +49,7 @@ import com.morefun.ysdk.sample.fragment.SLE4442CardFragment;
 import com.morefun.ysdk.sample.fragment.ScannerFragment;
 import com.morefun.ysdk.sample.fragment.SerialPortFragment;
 import com.morefun.ysdk.sample.fragment.SignatureFragment;
+import com.morefun.ysdk.sample.fragment.SystemFragment;
 import com.morefun.ysdk.sample.fragment.TpmFragment;
 import com.morefun.ysdk.sample.fragment.TransTestFragment;
 import com.morefun.ysdk.sample.fragment.UsbSerialFragment;
@@ -75,23 +77,26 @@ public class MainActivity extends AppCompatActivity {
     private static String[] tabs = {
             getStringValue(R.string.menu_login),
             getStringValue(R.string.menu_device),
+            getStringValue(R.string.menu_system),
             getStringValue(R.string.menu_beep),
             getStringValue(R.string.menu_led),
             getStringValue(R.string.menu_print),
+            getStringValue(R.string.menu_dukpt),
+            getStringValue(R.string.menu_mksk),
+            getStringValue(R.string.menu_emv),
+            getStringValue(R.string.menu_emv_param),
             getStringValue(R.string.menu_scanner),
             getStringValue(R.string.menu_serial_port),
             getStringValue(R.string.menu_mag_card),
             getStringValue(R.string.menu_cpu_card),
             getStringValue(R.string.menu_m1_card),
-            getStringValue(R.string.menu_dukpt),
-            getStringValue(R.string.menu_mksk),
-            getStringValue(R.string.menu_emv),
-            getStringValue(R.string.menu_emv_param),
-            getStringValue(R.string.menu_m0_card),
-            getStringValue(R.string.menu_ntag_card),
-            getStringValue(R.string.menu_sle4442_card),
             getStringValue(R.string.menu_psam_card),
             getStringValue(R.string.menu_felica_card),
+            getStringValue(R.string.menu_mful_c_card),
+            getStringValue(R.string.menu_mful_ev1_card),
+            getStringValue(R.string.menu_sle4442_card),
+            getStringValue(R.string.menu_ntag_card),
+            getStringValue(R.string.menu_at24cxx),
             getStringValue(R.string.menu_rupay),
             getStringValue(R.string.menu_sign),
             getStringValue(R.string.menu_print_test),
@@ -101,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             getStringValue(R.string.menu_usb_serial),
             getStringValue(R.string.menu_ped),
             getStringValue(R.string.menu_TPM),
-            getStringValue(R.string.menu_at24cxx)
+
     };
 
     private static HashMap<String, Fragment> hashMap = new HashMap<>();
@@ -115,33 +120,36 @@ public class MainActivity extends AppCompatActivity {
     static {
         hashMap.put(tabs[0], new LoginFragment());
         hashMap.put(tabs[1], new DeviceFragment());
-        hashMap.put(tabs[2], new BeepFragment());
-        hashMap.put(tabs[3], new LedFragment());
-        hashMap.put(tabs[4], new PrinterFragment());
-        hashMap.put(tabs[5], new ScannerFragment());
-        hashMap.put(tabs[6], new SerialPortFragment());
-        hashMap.put(tabs[7], new MagCardFragment());
-        hashMap.put(tabs[8], new CpuCardFragment());
-        hashMap.put(tabs[9], new M1CardFragment());
-        hashMap.put(tabs[10], new DUKPTFragment());
-        hashMap.put(tabs[11], new MKSKFragment());
-        hashMap.put(tabs[12], new EMVFragment());
-        hashMap.put(tabs[13], new EMVParamFragment());
-        hashMap.put(tabs[14], new M0CardFragment());
-        hashMap.put(tabs[15], new NTagCardFragment());
-        hashMap.put(tabs[16], new SLE4442CardFragment());
-        hashMap.put(tabs[17], new PSAMCardFragment());
-        hashMap.put(tabs[18], new FelicaFragment());
-        hashMap.put(tabs[19], new RuPayFragment());
-        hashMap.put(tabs[20], new SignatureFragment());
-        hashMap.put(tabs[21], new PrintTestFragment());
-        hashMap.put(tabs[22], new TransTestFragment());
-        hashMap.put(tabs[23], new OctopusSecureFragment());
-        hashMap.put(tabs[24], new EmulateCardFragment());
-        hashMap.put(tabs[25], new UsbSerialFragment());
-        hashMap.put(tabs[26], new PedFragment());
-        hashMap.put(tabs[27], new TpmFragment());
-        hashMap.put(tabs[28], new AT24CxxCardFragment());
+        hashMap.put(tabs[2], new SystemFragment());
+        hashMap.put(tabs[3], new BeepFragment());
+        hashMap.put(tabs[4], new LedFragment());
+        hashMap.put(tabs[5], new PrinterFragment());
+        hashMap.put(tabs[6], new DUKPTFragment());
+        hashMap.put(tabs[7], new MKSKFragment());
+        hashMap.put(tabs[8], new EMVFragment());
+        hashMap.put(tabs[9], new EMVParamFragment());
+        hashMap.put(tabs[10], new ScannerFragment());
+        hashMap.put(tabs[11], new SerialPortFragment());
+        hashMap.put(tabs[12], new MagCardFragment());
+        hashMap.put(tabs[13], new CpuCardFragment());
+        hashMap.put(tabs[14], new M1CardFragment());
+        hashMap.put(tabs[15], new PSAMCardFragment());
+        hashMap.put(tabs[16], new FelicaFragment());
+        hashMap.put(tabs[17], new MFULCCardFragment());
+        hashMap.put(tabs[18], new MFULEv1CardFragment());
+        hashMap.put(tabs[19], new SLE4442CardFragment());
+        hashMap.put(tabs[20], new NTagCardFragment());
+        hashMap.put(tabs[21], new AT24CxxCardFragment());
+        hashMap.put(tabs[22], new RuPayFragment());
+        hashMap.put(tabs[23], new SignatureFragment());
+        hashMap.put(tabs[24], new PrintTestFragment());
+        hashMap.put(tabs[25], new TransTestFragment());
+        hashMap.put(tabs[26], new OctopusSecureFragment());
+        hashMap.put(tabs[27], new EmulateCardFragment());
+        hashMap.put(tabs[28], new UsbSerialFragment());
+        hashMap.put(tabs[29], new PedFragment());
+        hashMap.put(tabs[30], new TpmFragment());
+
     }
 
     @Override

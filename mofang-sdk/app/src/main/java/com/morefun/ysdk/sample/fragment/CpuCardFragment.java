@@ -1,4 +1,4 @@
-package com.morefun.ysdk.sample.fragment;
+package com.morefun.nysdk.sample.fragment;
 
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -12,22 +12,12 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.morefun.yapi.ServiceResult;
-import com.morefun.yapi.card.cpu.APDUCmd;
-import com.morefun.yapi.card.cpu.CPUCardHandler;
-import com.morefun.yapi.device.reader.icc.ICCSearchResult;
-import com.morefun.yapi.device.reader.icc.IccCardReader;
-import com.morefun.yapi.device.reader.icc.IccCardType;
-import com.morefun.yapi.device.reader.icc.IccReaderSlot;
-import com.morefun.yapi.device.reader.icc.OnSearchIccCardListener;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;
 import com.morefun.ysdk.sample.utils.DialogUtils;
 import com.morefun.ysdk.sample.utils.HexUtil;
 import com.morefun.ysdk.sample.utils.ToastUtils;
-
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,11 +42,14 @@ public class CpuCardFragment extends Fragment {
         return view;
     }
 
-    @OnClick({R.id.btn_cpuCard, R.id.btn_typeACardOpen, R.id.btn_typeACardClose, R.id.btn_typeAExchange})
+    @OnClick({R.id.btn_cpuCard, R.id.btn_rfCard, R.id.btn_typeACardClose, R.id.btn_typeAExchange})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_cpuCard:
-                searchCpuCard(new String[]{IccCardType.CPUCARD});
+                checkCpuCard();
+                break;
+            case R.id.btn_rfCard:
+                checkRFCard();
                 break;
             case R.id.btn_typeACardOpen:
                 typeACardOpen();
@@ -138,99 +131,132 @@ public class CpuCardFragment extends Fragment {
         }).start();
     }
 
-    private void searchCpuCard(final String[] cardType) {
-        DialogUtils.showProgressDialog(getActivity(), getString(R.string.tip_dip_tap_card));
-        try {
-            final IccCardReader icReader = DeviceHelper.getIccCardReader(IccReaderSlot.ICSlOT1);
-            final IccCardReader rfReader = DeviceHelper.getIccCardReader(IccReaderSlot.RFSlOT);
+    private void checkRFCard() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DialogUtils.showProgressDialog(getActivity(), getString(R.string.tip_tap_card));
+                    long currentTime = System.currentTimeMillis();
 
-            OnSearchIccCardListener.Stub listener = new OnSearchIccCardListener.Stub() {
-                @Override
-                public void onSearchResult(int retCode, Bundle bundle) throws RemoteException {
+                    while (true) {
+                        DeviceHelper.getCpuRFCard().close();
+                        if (DeviceHelper.getCpuRFCard().open() == 0) {
+                            DialogUtils.setProgressMessage(getActivity(), "Exchange...");
 
-                    icReader.stopSearch();
-                    rfReader.stopSearch();
+                            try {
+                                byte[] cmd = BytesUtil.hexString2Bytes(etData.getText().toString());
+                                byte[] result = new byte[256];
+                                int ret = DeviceHelper.getCpuRFCard().exchangeCmd(result, cmd, cmd.length);
 
-                    if (ServiceResult.Success == retCode) {
-                        String cardType = bundle.getString(ICCSearchResult.CARDTYPE);
-                        if (IccCardType.CPUCARD.equals(cardType)) {
-                            int slot = bundle.getInt(ICCSearchResult.CARDOTHER);
-                            exchangeAPDU(slot);
+                                byte[] uid = new byte[16];
+                                int len = DeviceHelper.getCpuRFCard().getUid(uid);
+                                Log.e(TAG, String.format("rf uid len:%d, %s", len, BytesUtil.bytes2HexString(uid)));
+
+                                byte[] ats = new byte[64];
+                                int atsLen = DeviceHelper.getCpuRFCard().getAts(ats);
+                                Log.e(TAG, String.format("rf ats len:%d, %s", atsLen, BytesUtil.bytes2HexString(BytesUtil.subBytes(ats, 0, atsLen))));
+
+                                DeviceHelper.getCpuRFCard().close();
+
+                                DialogUtils.dismissProgressDialog(getActivity());
+                                if (ret >= 0) {
+                                    StringBuilder builder = new StringBuilder();
+
+                                    builder.append("UID: ").append(BytesUtil.bytes2HexString(uid)).append("\r\n");
+                                    builder.append("ATS: ").append(BytesUtil.bytes2HexString(BytesUtil.subBytes(ats, 0, atsLen))).append("\r\n");
+                                    builder.append("DATA: ").append(BytesUtil.bytes2HexString(BytesUtil.subBytes(result, 0, ret))).append("\r\n");
+
+                                    DialogUtils.showAlertDialog(getActivity(), builder.toString());
+                                } else {
+                                    DialogUtils.showAlertDialog(getActivity(), "Exchange Fail!");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                DialogUtils.dismissProgressDialog(getActivity());
+                                DialogUtils.showAlertDialog(getActivity(), "Exchange Fail!");
+                            } finally {
+                                DeviceHelper.getCpuRFCard().close();
+                            }
+                            return;
                         }
-                    } else {
-                        DialogUtils.dismissProgressDialog(getActivity());
-                        DialogUtils.showAlertDialog(getActivity(), "Search Card Fail!");
+                        if (System.currentTimeMillis() - currentTime > 10 * 1000) {
+                            DialogUtils.showAlertDialog(getActivity(), "Timeout");
+                            DialogUtils.dismissProgressDialog(getActivity());
+                            return;
+                        }
+                        Thread.sleep(200);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    DialogUtils.dismissProgressDialog(getActivity());
+                    ToastUtils.show(getActivity(), e.getMessage());
                 }
-            };
-
-            icReader.searchCard(listener, 10, cardType);
-            rfReader.searchCard(listener, 10, cardType);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            showResult(e.getMessage());
-        }
+            }
+        }).start();
     }
 
-    private void exchangeAPDU(int slot) throws RemoteException {
-        DialogUtils.setProgressMessage(getActivity(), "Exchange...");
-        IccCardReader cardReader = DeviceHelper.getIccCardReader(slot);
-        CPUCardHandler cpuCardHandler = DeviceHelper.getCpuCardHandler(cardReader);
+    private void checkCpuCard() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DialogUtils.showProgressDialog(getActivity(), getString(R.string.tip_dip_card));
+                    long currentTime = System.currentTimeMillis();
 
-        try {
-            String cmd = "00A40400";
-            String data = "325041592E5359532E4444463031";
-            byte le = 0x00;
+                    DeviceHelper.getCpuCardHandler().setPowerOff();
+                    while (true) {
+                        if (DeviceHelper.getCpuCardHandler().isExist()) {
+                            DialogUtils.setProgressMessage(getActivity(), "Exchange...");
 
-            if (cpuCardHandler == null) {
-                DialogUtils.dismissProgressDialog(getActivity());
-                DialogUtils.showAlertDialog(getActivity(), "Cpu Card Handler Is Null!");
-                return;
-            }
-            byte[] atr = new byte[16];
-            if (0 == cpuCardHandler.setPowerOn(atr)) {
-                DialogUtils.dismissProgressDialog(getActivity());
-                DialogUtils.showAlertDialog(getActivity(), "Power On Fail!");
-                return;
-            }
+                            try {
+                                byte[] cmd = BytesUtil.hexString2Bytes(etData.getText().toString());
 
-            byte[] cmdBytes = HexUtil.hexStringToByte(cmd);
-            byte[] dataArray = HexUtil.hexStringToByte(data);
-            byte[] tmp = new byte[256];
+                                byte[] atr = new byte[256];
+                                int atrLen = DeviceHelper.getCpuCardHandler().setPowerOn(atr);
+                                if (atrLen < 0) {
+                                    DialogUtils.dismissProgressDialog(getActivity());
+                                    DialogUtils.showAlertDialog(getActivity(), "Power On Fail!");
+                                    return;
+                                }
 
-            System.arraycopy(dataArray, 0, tmp, 0, dataArray.length);
+                                byte[] result = new byte[256];
+                                int ret = DeviceHelper.getCpuCardHandler().exchangeCmd(result, cmd, cmd.length);
+                                DeviceHelper.getCpuCardHandler().setPowerOff();
 
-            APDUCmd apduCmd = new APDUCmd();
-            apduCmd.setCla(cmdBytes[0]);
-            apduCmd.setIns(cmdBytes[1]);
-            apduCmd.setP1(cmdBytes[2]);
-            apduCmd.setP2(cmdBytes[3]);
-            apduCmd.setLc(dataArray.length);
-            apduCmd.setDataIn(tmp);
-            apduCmd.setLe(le);
+                                DialogUtils.dismissProgressDialog(getActivity());
+                                if (ret >= 0) {
+                                    StringBuilder builder = new StringBuilder();
+                                    builder.append("ATR: " + HexUtil.bytesToHexString(BytesUtil.subBytes(atr, 0, atrLen))).append("\n");
+                                    builder.append("DATA: " + HexUtil.bytesToHexString(BytesUtil.subBytes(result, 0, ret)));
 
-            int ret = cpuCardHandler.exchangeAPDUCmd(apduCmd);
-            cpuCardHandler.setPowerOff();
-
-            DialogUtils.dismissProgressDialog(getActivity());
-            if (ret == ServiceResult.Success) {
-                StringBuilder builder = new StringBuilder();
-                if (!Arrays.equals(atr, new byte[16])) {
-                    builder.append("ATR: " + HexUtil.bytesToHexString(atr)).append("\n");
+                                    DialogUtils.showAlertDialog(getActivity(), builder.toString());
+                                } else {
+                                    DialogUtils.showAlertDialog(getActivity(), "Exchange Fail!");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                DialogUtils.dismissProgressDialog(getActivity());
+                                DialogUtils.showAlertDialog(getActivity(), "Exchange Fail!");
+                            } finally {
+                                DeviceHelper.getCpuCardHandler().setPowerOff();
+                            }
+                            return;
+                        }
+                        if (System.currentTimeMillis() - currentTime > 10 * 1000) {
+                            DialogUtils.showAlertDialog(getActivity(), "Timeout");
+                            DialogUtils.dismissProgressDialog(getActivity());
+                            return;
+                        }
+                        Thread.sleep(200);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    DialogUtils.dismissProgressDialog(getActivity());
+                    ToastUtils.show(getActivity(), e.getMessage());
                 }
-                builder.append("DATA: " + HexUtil.bytesToHexString(BytesUtil.subBytes(apduCmd.getDataOut(), 0, apduCmd.getDataOutLen())));
-
-                DialogUtils.showAlertDialog(getActivity(), builder.toString());
-            } else {
-                DialogUtils.showAlertDialog(getActivity(), "Exchange Fail!");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            DialogUtils.dismissProgressDialog(getActivity());
-            DialogUtils.showAlertDialog(getActivity(), "Exchange Fail!");
-        } finally {
-            cpuCardHandler.setPowerOff();
-        }
+        }).start();
     }
 
     private void showResult(final String text) {

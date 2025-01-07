@@ -1,6 +1,7 @@
 package com.morefun.ysdk.sample.fragment;
 
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,21 +11,17 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.morefun.yapi.card.industry.SL4442Card;
+import com.morefun.yapi.card.sle4442.ISLE4442Card;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;
+import com.morefun.ysdk.sample.utils.DialogUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.morefun.ysdk.sample.utils.BytesUtil.bytes2HexString;
-import static com.morefun.ysdk.sample.utils.BytesUtil.hexString2Bytes;
-import static com.morefun.ysdk.sample.utils.BytesUtil.int2bytes;
-
 public class SLE4442CardFragment extends Fragment {
-
     @BindView(R.id.et_address)
     EditText et_address;
 
@@ -42,19 +39,6 @@ public class SLE4442CardFragment extends Fragment {
 
     private final String TAG = SLE4442CardFragment.class.getName();
 
-    private final String CMD_OPEN = "0A000000";
-    private final String CMD_POWER_ON = "01000000";
-    private final String CMD_POWER_OFF = "02000000";
-    private final String CMD_CLOSE = "0B000000";
-    private final String CMD_READ_MM = "03000000";
-    private final String CMD_READ_PM = "05000000";
-    private final String CMD_READ_SM = "07000000";
-    private final String CMD_WRITE_MM = "04000000";
-    private final String CMD_WRITE_PM = "06000000";
-    private final String CMD_WRITE_SM = "08000000";
-    private final String CMD_AUTH = "09000000";
-    private final String CMD_CARD_PRESENT = "0C000000";
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sle4442_card, null);
@@ -63,11 +47,17 @@ public class SLE4442CardFragment extends Fragment {
         return view;
     }
 
-    @OnClick({R.id.btn_powerOn, R.id.btn_powerOff, R.id.btn_verify, R.id.btn_present,
-            R.id.btn_pmRead, R.id.btn_pmWrite, R.id.btn_mmWrite, R.id.btn_mmRead,
-            R.id.btn_smRead, R.id.btn_smWrite})
+    @OnClick({R.id.btn_open, R.id.btn_close, R.id.btn_powerOn, R.id.btn_powerOff,
+            R.id.btn_verify, R.id.btn_present, R.id.btn_pmRead, R.id.btn_pmWrite,
+            R.id.btn_mmWrite, R.id.btn_mmRead, R.id.btn_smRead, R.id.btn_smWrite})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_open:
+                open();
+                break;
+            case R.id.btn_close:
+                close();
+                break;
             case R.id.btn_powerOn:
                 powerOn();
                 break;
@@ -101,58 +91,48 @@ public class SLE4442CardFragment extends Fragment {
         }
     }
 
-    private SL4442Card getSLE4442Card() {
+    @Override
+    public void onPause() {
+        super.onPause();
+
         try {
-            return DeviceHelper.getSL4442Card(null);
+            getSLE4442Card().close();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ISLE4442Card getSLE4442Card() {
+        try {
+            return DeviceHelper.getSLE4442Card();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private byte[] makeReadPacket(String cmd) {
-        byte[] addressBuf = new byte[4];
-        byte[] lenBuf = new byte[4];
+    private void open() {
         try {
-            int address = Integer.parseInt(et_address.getText().toString());
-            int2bytes(address, addressBuf, 0);
-
-            int len = Integer.parseInt(et_readLen.getText().toString());
-            int2bytes(len, lenBuf, 0);
+            boolean ret = getSLE4442Card().open();
+            DialogUtils.showAlertDialog(getActivity(), ret ? "Open Success" : "Open Fail");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        String read = cmd + bytes2HexString(addressBuf) + bytes2HexString(lenBuf);
-        return hexString2Bytes(read);
     }
 
-    private byte[] makeWritePacket(String cmd, byte[] data) {
-        byte[] addressBuf = new byte[4];
-        byte[] lenBuf = new byte[4];
+    private void close() {
         try {
-            int address = Integer.parseInt(et_address.getText().toString());
-            int2bytes(address, addressBuf, 0);
-
-            int len = Integer.parseInt(et_readLen.getText().toString());
-            int2bytes(len, lenBuf, 0);
+            boolean ret = getSLE4442Card().close();
+            DialogUtils.showAlertDialog(getActivity(), ret ? "Close Success" : "Close Fail");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        String write = cmd + bytes2HexString(addressBuf) + bytes2HexString(lenBuf) + bytes2HexString(data);
-        return hexString2Bytes(write);
     }
-
     private void powerOn() {
         try {
-            byte[] rst = new byte[256];
-            int rstLen = getSLE4442Card().open(hexString2Bytes(CMD_OPEN), rst);
-            showResult("OPEN:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
-
-            rst = new byte[256];
-            rstLen = getSLE4442Card().powerOn(hexString2Bytes(CMD_POWER_ON), rst);
-            showResult("POWER ON:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            byte[] atr = new byte[256];
+            int ret = getSLE4442Card().powerOn(atr);
+            DialogUtils.showAlertDialog(getActivity(), ret == 0 ? "Power on Success" : "Power on Fail");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -160,13 +140,8 @@ public class SLE4442CardFragment extends Fragment {
 
     private void powerOff() {
         try {
-            byte[] rst = new byte[2048];
-            int rstLen = getSLE4442Card().powerOff(hexString2Bytes(CMD_POWER_OFF), rst);
-            showResult("POWER OFF:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
-
-            rst = new byte[2048];
-            rstLen = getSLE4442Card().close(hexString2Bytes(CMD_CLOSE), rst);
-            showResult("CLOSE:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            int ret = getSLE4442Card().powerOff();
+            DialogUtils.showAlertDialog(getActivity(), ret == 0 ? "Power Off Success" : "Power Off Fail");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -175,9 +150,10 @@ public class SLE4442CardFragment extends Fragment {
     private void pmRead() {
         try {
             byte[] rst = new byte[256];
-            byte[] cmd = makeReadPacket(CMD_READ_PM);
-            int rstLen = getSLE4442Card().readPM(cmd, rst);
-            showResult("Read PM:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            int address = Integer.parseInt(et_address.getText().toString());
+            int len = Integer.parseInt(et_readLen.getText().toString());
+            int rstLen = getSLE4442Card().pmRead(address, len, rst);
+            DialogUtils.showAlertDialog(getActivity(), BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -186,11 +162,10 @@ public class SLE4442CardFragment extends Fragment {
     private void pmWrite() {
         try {
             byte[] data = BytesUtil.hexString2Bytes(et_data.getText().toString());
-            byte[] rst = new byte[256];
-            byte[] cmd = makeWritePacket(CMD_WRITE_PM, data);
+            int address = Integer.parseInt(et_address.getText().toString());
 
-            int rstLen = getSLE4442Card().writePM(cmd, rst);
-            showResult("Write PM:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            int ret = getSLE4442Card().pmWrite(address, data, data.length);
+            DialogUtils.showAlertDialog(getActivity(), ret == 0 ? "Write Success" : "Write Fail");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -199,9 +174,10 @@ public class SLE4442CardFragment extends Fragment {
     private void mmRead() {
         try {
             byte[] rst = new byte[256];
-            byte[] cmd = makeReadPacket(CMD_READ_MM);
-            int rstLen = getSLE4442Card().readMM(cmd, rst);
-            showResult("Read MM:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            int address = Integer.parseInt(et_address.getText().toString());
+            int len = Integer.parseInt(et_readLen.getText().toString());
+            int rstLen = getSLE4442Card().mmRead(address, len, rst);
+            DialogUtils.showAlertDialog(getActivity(), BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -210,11 +186,10 @@ public class SLE4442CardFragment extends Fragment {
     private void mmWrite() {
         try {
             byte[] data = BytesUtil.hexString2Bytes(et_data.getText().toString());
-            byte[] rst = new byte[256];
-            byte[] cmd = makeWritePacket(CMD_WRITE_MM, data);
+            int address = Integer.parseInt(et_address.getText().toString());
 
-            int rstLen = getSLE4442Card().writeMM(cmd, rst);
-            showResult("Write MM:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            int ret = getSLE4442Card().mmWrite(address, data, data.length);
+            DialogUtils.showAlertDialog(getActivity(), ret == 0 ? "Write Success" : "Write Fail");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -223,9 +198,12 @@ public class SLE4442CardFragment extends Fragment {
     private void smRead() {
         try {
             byte[] rst = new byte[256];
-            byte[] cmd = makeReadPacket(CMD_READ_SM);
-            int rstLen = getSLE4442Card().readSM(cmd, rst);
-            showResult("Read SM:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            int address = Integer.parseInt(et_address.getText().toString());
+            int len = Integer.parseInt(et_readLen.getText().toString());
+            int rstLen = getSLE4442Card().smRead(address, len, rst);
+
+            DialogUtils.showAlertDialog(getActivity(), rstLen > 0 ?
+                    BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)) : "SM read fail");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -233,12 +211,11 @@ public class SLE4442CardFragment extends Fragment {
 
     private void smWrite() {
         try {
-            byte[] data = BytesUtil.hexString2Bytes(et_data.getText().toString());
-            byte[] rst = new byte[256];
-            byte[] cmd = makeWritePacket(CMD_WRITE_SM, data);
+            byte[] data = BytesUtil.hexString2Bytes(et_key.getText().toString());
+            int address = Integer.parseInt(et_address.getText().toString());
 
-            int rstLen = getSLE4442Card().writeSM(cmd, rst);
-            showResult("Write SM:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            int ret = getSLE4442Card().smWrite(address, data, data.length);
+            DialogUtils.showAlertDialog(getActivity(), ret == 0 ? "Write Success" : "Write Fail");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -247,12 +224,11 @@ public class SLE4442CardFragment extends Fragment {
     private void verify() {
         try {
             try {
+                int address = Integer.parseInt(et_address.getText().toString());
                 byte[] data = BytesUtil.hexString2Bytes(et_key.getText().toString());
-                byte[] rst = new byte[256];
-                byte[] cmd = makeWritePacket(CMD_AUTH, data);
 
-                int rstLen = getSLE4442Card().auth(cmd, rst);
-                showResult("Auth:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+                int ret = getSLE4442Card().auth(address, data, data.length);
+                DialogUtils.showAlertDialog(getActivity(), ret == 0 ? "Write Success" : "Write Fail");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -263,10 +239,8 @@ public class SLE4442CardFragment extends Fragment {
 
     private void isCardPresent() {
         try {
-            byte[] rst = new byte[256];
-            byte[] cmd = makeReadPacket(CMD_CARD_PRESENT);
-            int rstLen = getSLE4442Card().isCardPresent(cmd, rst);
-            showResult("IS CARD PRESENT:" + BytesUtil.bytes2HexString(BytesUtil.subBytes(rst, 0, rstLen)));
+            int ret = getSLE4442Card().present();
+            DialogUtils.showAlertDialog(getActivity(), ret == 0 ? "Card Exist" : "Not Exist");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -281,5 +255,4 @@ public class SLE4442CardFragment extends Fragment {
             }
         });
     }
-
 }

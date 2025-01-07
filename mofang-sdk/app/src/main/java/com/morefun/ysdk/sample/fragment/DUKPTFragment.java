@@ -1,7 +1,6 @@
 package com.morefun.ysdk.sample.fragment;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
@@ -26,6 +25,7 @@ import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;
 import com.morefun.ysdk.sample.utils.DialogUtils;
 import com.morefun.ysdk.sample.utils.HexUtil;
+import com.morefun.ysdk.sample.utils.StringUitls;
 import com.morefun.ysdk.sample.utils.ToastUtils;
 
 import butterknife.BindView;
@@ -48,7 +48,7 @@ public class DUKPTFragment extends Fragment {
 
     @OnClick({R.id.btn_login, R.id.btn_dukptInit, R.id.btn_currentKsn, R.id.btn_increaseKsn,
             R.id.btn_dukptEncrypt, R.id.btn_dukptDecrypt, R.id.btn_onlinePin, R.id.btn_offlinePin,
-            R.id.btn_calcMac, R.id.btn_pin_block})
+            R.id.btn_calcMac, R.id.btn_pin_block, R.id.btn_dukptTR31})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
@@ -56,6 +56,9 @@ public class DUKPTFragment extends Fragment {
                 break;
             case R.id.btn_dukptInit:
                 dukptInit();
+                break;
+            case R.id.btn_dukptTR31:
+                dukptLoadTR31();
                 break;
             case R.id.btn_currentKsn:
                 increaseKsn(false);
@@ -147,6 +150,29 @@ public class DUKPTFragment extends Fragment {
         }
     }
 
+    private void dukptLoadTR31() {
+        try {
+            byte[] kbpk = HexUtil.hexStringToByte("172d1aa805221002567c65330c433813");
+            DeviceHelper.getPinpad().loadKEK(0, kbpk, null);
+
+            String tr31 = "B0096B1TX00S0000D89B01578C0568C56F183CB7B044C124F07F0120F49C9C08732B942FB6CEE202AE249A4D88A45CEC";
+            String ksn = "21FFFF33110000000000";
+
+            DukptLoadObj dukptLoadObj = new DukptLoadObj(tr31, ksn,
+                    DukptLoadObj.DukptKeyTypeEnum.DUKPT_IPEK_TR31,
+                    DukptLoadObj.DukptKeyIndexEnum.values()[getKeyIndex()]);
+
+            int ret = DeviceHelper.getPinpad().dukptLoad(dukptLoadObj);
+            if (ret == 0) {
+                DialogUtils.showAlertDialog(getActivity(), "DUKPT Load Success");
+            } else {
+                DialogUtils.showAlertDialog(getActivity(), "DUKPT Load Fail");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
      * increaseKsn needs to be called every time the device is restarted bIncrease true
      */
@@ -223,10 +249,10 @@ public class DUKPTFragment extends Fragment {
         bundle.putString(PinPadConstrants.TITLE_HEAD_CONTENT, "Please input the online pin");
         bundle.putBoolean(PinPadConstrants.COMMON_SUPPORT_BYPASS, true);
         bundle.putBoolean(PinPadConstrants.COMMON_IS_RANDOM, false);
-        if (Build.MODEL.equals("MF960")) {
+        if (StringUitls.getDeviceModel().contains("MF960")) {
             bundle.putBoolean(PinPadConstrants.COMMON_IS_PHYSICAL_KEYBOARD, true);
         }
-        if (Build.MODEL.equals("H9PRO")) {
+        if (StringUitls.getDeviceModel().contains("H9PRO")) {
             bundle.putBoolean(PinPadConstrants.COMMON_IS_PHYSICAL_KEYBOARD, true);
         }
         int minLength = 0;

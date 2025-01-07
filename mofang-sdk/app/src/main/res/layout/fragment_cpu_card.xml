@@ -95,30 +95,37 @@
 
                 <Button
                     android:id="@+id/btn_cpuCard"
+                    style="@style/ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
                     android:text="@string/btn_cpu_card" />
 
                 <Button
-                    android:id="@+id/btn_typeACardOpen"
+                    android:id="@+id/btn_rfCard"
+                    style="@style/ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
+                    android:text="RF CARD" />
+
+                <Button
+                    android:id="@+id/btn_typeACardOpen"
+                    style="@style/ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:text="@string/btn_typea_card_open" />
 
                 <Button
                     android:id="@+id/btn_typeACardClose"
+                    style="@style/ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
                     android:text="@string/btn_typea_card_close" />
 
                 <Button
                     android:id="@+id/btn_typeAExchange"
+                    style="@style/ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
                     android:text="@string/btn_typea_card_exchange" />
             </LinearLayout>
 

@@ -1,20 +1,21 @@
 package com.morefun.ysdk.sample.device;
 
 import android.annotation.SuppressLint;
-import android.os.Handler;
 import android.os.RemoteException;
 import android.util.Log;
 
 import com.morefun.yapi.card.at24cxx.IAT24CxxCard;
-import com.morefun.yapi.card.cpu.CPUCardHandler;
 import com.morefun.yapi.card.cpu.CPUTypeAHandler;
+import com.morefun.yapi.card.cpu.ICpuCard;
+import com.morefun.yapi.card.cpu.ICpuRFCard;
 import com.morefun.yapi.card.emulate.EmulateCardHandler;
-import com.morefun.yapi.card.industry.IndustryCardHandler;
-import com.morefun.yapi.card.industry.NTagCard;
-import com.morefun.yapi.card.industry.SL4442Card;
-import com.morefun.yapi.card.mifare.M0CHandler;
-import com.morefun.yapi.card.mifare.M0Ev1Handler;
-import com.morefun.yapi.card.mifare.M1CardHandler;
+import com.morefun.yapi.card.felica.IFelica;
+import com.morefun.yapi.card.m1card.IM1Card;
+import com.morefun.yapi.card.mfulc.IMFULCCard;
+import com.morefun.yapi.card.mfulev1.IMFULEv1Card;
+import com.morefun.yapi.card.ntag215.INTAG215Card;
+import com.morefun.yapi.card.psam.IPSAM;
+import com.morefun.yapi.card.sle4442.ISLE4442Card;
 import com.morefun.yapi.device.beeper.Beeper;
 import com.morefun.yapi.device.dukpt.IDukpt;
 import com.morefun.yapi.device.hsm.Hsm;
@@ -44,16 +45,9 @@ public class DeviceHelper {
 
     private static PinPad pinpad;
     private static IccCardReader iccCardReader;
-    private static CPUCardHandler cpuCardHandler;
-    private static M1CardHandler m1CardHandler;
 
-    private static M0Ev1Handler m0Ev1Handler;
-    private static M0CHandler m0CHandler;
-    private static SL4442Card sl4442Card;
-    private static NTagCard nTagCard;
     private static SecureArea mSecureArea;
     private static Hsm mHsm;
-    private static IndustryCardHandler industryCardHandler;
     private static MagCardReader magCardReader;
     private static LEDDriver ledDriver;
     private static MultipleAppPrinter printer;
@@ -72,6 +66,15 @@ public class DeviceHelper {
     private static IDukpt dukpt;
     private static TpmManager tpmManager;
     private static IAT24CxxCard at24CxxCard;
+    private static IM1Card m1CardHandler;
+    private static ICpuCard cpuCard;
+    private static ICpuRFCard cpuRFCard;
+    private static IFelica felica;
+    private static IPSAM psam;
+    private static IMFULEv1Card mfulEv1Card;
+    private static IMFULCCard mfulCCard;
+    private static ISLE4442Card sle4442Card;
+    private static INTAG215Card ntag215Card;
 
     @SuppressLint("NewApi")
     public static void initDevices(MyApplication application) throws RemoteException {
@@ -97,6 +100,15 @@ public class DeviceHelper {
                 dukpt = getDukpt();
                 tpmManager = getTpmManager();
                 at24CxxCard = getAT24CxxCard();
+                cpuCard = getCpuCardHandler();
+                cpuRFCard = getCpuRFCard();
+                felica = getFelica();
+                psam = getPSAM();
+                mfulEv1Card = getMFULEv1Card();
+                mfulCCard = getMFULCCard();
+                sle4442Card = getSLE4442Card();
+                ntag215Card = getNTAGCard();
+                m1CardHandler = getM1CardHandler();
             } catch (RemoteException e) {
                 e.printStackTrace();
                 throw e;
@@ -180,89 +192,6 @@ public class DeviceHelper {
 
 
     @SuppressLint("NewApi")
-    public static CPUCardHandler getCpuCardHandler(IccCardReader iccCardReader) throws RemoteException {
-        if (cpuCardHandler == null) {
-            checkState();
-            try {
-                return application.getDeviceService().getCPUCardHandler(iccCardReader);
-            } catch (RemoteException e) {
-                throw new RemoteException("PinPad service acquisition failed, please try again later.");
-            }
-        } else {
-            return cpuCardHandler;
-        }
-    }
-
-    @SuppressLint("NewApi")
-    public static M1CardHandler getM1CardHandler(IccCardReader iccCardReader) throws RemoteException {
-        if (m1CardHandler == null) {
-            checkState();
-            try {
-                return application.getDeviceService().getM1CardHandler(iccCardReader);
-            } catch (RemoteException e) {
-                throw new RemoteException("PinPad service acquisition failed, please try again later.");
-            }
-        } else {
-            return m1CardHandler;
-        }
-    }
-
-    @SuppressLint("NewApi")
-    public static M0Ev1Handler getM0Ev1CardHandler(IccCardReader iccCardReader) throws RemoteException {
-        if (m0Ev1Handler == null) {
-            checkState();
-            try {
-                return application.getDeviceService().getM0Ev1CardHandler(iccCardReader);
-            } catch (RemoteException e) {
-                throw new RemoteException("m0Ev1Handler service acquisition failed, please try again later.");
-            }
-        } else {
-            return m0Ev1Handler;
-        }
-    }
-
-    @SuppressLint("NewApi")
-    public static M0CHandler getM0CCardHandler(IccCardReader iccCardReader) throws RemoteException {
-        if (m0CHandler == null) {
-            checkState();
-            try {
-                return application.getDeviceService().getM0CCardHandler(null);
-            } catch (RemoteException e) {
-                throw new RemoteException("m0CHandler service acquisition failed, please try again later.");
-            }
-        } else {
-            return m0CHandler;
-        }
-    }
-
-    @SuppressLint("NewApi")
-    public static NTagCard getNTagCard(IccCardReader iccCardReader) throws RemoteException {
-        if (m0CHandler == null) {
-            checkState();
-            try {
-                return application.getDeviceService().getNTagCardHandler(null);
-            } catch (RemoteException e) {
-                throw new RemoteException("nTagCard service acquisition failed, please try again later.");
-            }
-        } else {
-            return nTagCard;
-        }
-    }
-
-    public static SL4442Card getSL4442Card(IccCardReader iccCardReader) throws RemoteException {
-        if (sl4442Card == null) {
-            checkState();
-            try {
-                return application.getDeviceService().getSL4442CardHandler(null);
-            } catch (RemoteException e) {
-                throw new RemoteException("sl4442 service acquisition failed, please try again later.");
-            }
-        } else {
-            return sl4442Card;
-        }
-    }
-
-    @SuppressLint("NewApi")
     public static SecureArea getSecureArea() throws RemoteException {
         if (mSecureArea == null) {
             checkState();
@@ -290,20 +219,6 @@ public class DeviceHelper {
         }
     }
 
-
-    @SuppressLint("NewApi")
-    public static IndustryCardHandler getIndustryCardHandler(IccCardReader iccCardReader) throws RemoteException {
-        if (industryCardHandler == null) {
-            checkState();
-            try {
-                return application.getDeviceService().getIndustryCardHandler(iccCardReader);
-            } catch (RemoteException e) {
-                throw new RemoteException("PinPad service acquisition failed, please try again later.");
-            }
-        } else {
-            return industryCardHandler;
-        }
-    }
 
     @SuppressLint("NewApi")
     public static MagCardReader getMagCardReader() throws RemoteException {
@@ -515,13 +430,132 @@ public class DeviceHelper {
         }
     }
 
+    @SuppressLint("NewApi")
+    public static ICpuCard getCpuCardHandler() throws RemoteException {
+        if (cpuCard == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getCpuCard();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return cpuCard;
+        }
+    }
+
+    @SuppressLint("NewApi")
+    public static IM1Card getM1CardHandler() throws RemoteException {
+        if (m1CardHandler == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getM1Card();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return m1CardHandler;
+        }
+    }
+
+
+    @SuppressLint("NewApi")
+    public static ICpuRFCard getCpuRFCard() throws RemoteException {
+        if (cpuRFCard == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getCpuRFCard();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return cpuRFCard;
+        }
+    }
+
+    @SuppressLint("NewApi")
+    public static IFelica getFelica() throws RemoteException {
+        if (felica == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getFelica();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return felica;
+        }
+    }
+
+
+    public static IPSAM getPSAM() throws RemoteException {
+        if (psam == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getPSAM();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return psam;
+        }
+    }
+
+    public static IMFULEv1Card getMFULEv1Card() throws RemoteException {
+        if (mfulEv1Card == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getMFULEV1Card();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return mfulEv1Card;
+        }
+    }
+
+    public static IMFULCCard getMFULCCard() throws RemoteException {
+        if (mfulCCard == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getMFULCCard();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return mfulCCard;
+        }
+    }
+
+    public static ISLE4442Card getSLE4442Card() throws RemoteException {
+        if (sle4442Card == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getSLE4442Card();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return sle4442Card;
+        }
+    }
+
+    public static INTAG215Card getNTAGCard() throws RemoteException {
+        if (ntag215Card == null) {
+            checkState();
+            try {
+                return application.getDeviceService().getNTAG215Card();
+            } catch (RemoteException e) {
+                throw new RemoteException("PinPad service acquisition failed, please try again later.");
+            }
+        } else {
+            return ntag215Card;
+        }
+    }
 
     public static void reset() {
         pinpad = null;
         iccCardReader = null;
-        cpuCardHandler = null;
-        m1CardHandler = null;
-        industryCardHandler = null;
         magCardReader = null;
         ledDriver = null;
         printer = null;
@@ -536,6 +570,15 @@ public class DeviceHelper {
         dukpt = null;
         tpmManager = null;
         at24CxxCard = null;
+        m1CardHandler = null;
+        cpuCard = null;
+        cpuRFCard = null;
+        felica = null;
+        psam = null;
+        mfulEv1Card = null;
+        mfulCCard = null;
+        sle4442Card = null;
+        ntag215Card = null;
     }
 
 }

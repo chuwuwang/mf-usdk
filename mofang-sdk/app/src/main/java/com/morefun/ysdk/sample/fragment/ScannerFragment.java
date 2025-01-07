@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.morefun.yapi.device.reader.mag.MagCardInfoEntity;
 import com.morefun.yapi.device.scanner.InnerScanner;
 import com.morefun.yapi.device.scanner.OnScannedListener;
 import com.morefun.yapi.device.scanner.ScannerConfig;
@@ -25,13 +24,11 @@ import com.morefun.yapi.device.scanner.ZebraParam;
 import com.morefun.ysdk.sample.MyApplication;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
-import com.morefun.ysdk.sample.receiver.PackageInstallReceiver;
 import com.morefun.ysdk.sample.utils.DialogUtils;
 import com.morefun.ysdk.sample.utils.ToastUtils;
 import com.morefun.ysdk.sample.zxing.CaptureActivity;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 import butterknife.BindView;

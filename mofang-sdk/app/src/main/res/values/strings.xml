@@ -2,6 +2,7 @@
     <string name="app_name">YDemo</string>
     <string name="menu_login">LOGIN</string>
     <string name="menu_device">DEVICE</string>
+    <string name="menu_system">SYSTEM</string>
     <string name="menu_beep">BEEP</string>
     <string name="menu_led">LED</string>
     <string name="menu_print">PRINTER</string>
@@ -29,6 +30,8 @@
     <string name="menu_usb_serial">USB SERIAL</string>
     <string name="menu_TPM">TPM</string>
     <string name="menu_at24cxx">AT24Cxx</string>
+    <string name="menu_mful_c_card">MFUL C</string>
+    <string name="menu_mful_ev1_card">MFUL EV1</string>
 
     <string name="title_login_input_businessId">Input Business Id</string>
     <string name="title_serial_port_input">Please Input Data</string>
@@ -64,6 +67,7 @@
     <string name="tip_dip_tap_card">Please dip card or tap card...</string>
     <string name="tip_tap_card">Please tap card...</string>
     <string name="tip_signature"> Please sign at below space, then click printing...</string>
+    <string name="tip_dip_card">Please dip card...</string>
 
     <string name="btn_device_info">DEVICE INFO</string>
     <string name="btn_device_install">INSTALL</string>
@@ -171,6 +175,37 @@
 
     <string name="title_tpm_input">Please Input command</string>
 
+    <string name="btn_ntag_open">OPEN</string>
+    <string name="btn_ntag_close">CLOSE</string>
+    <string name="btn_ntag_get_version">GET VERSION</string>
+    <string name="btn_ntag_read">READ</string>
+    <string name="btn_ntag_fast_read">FAST READ</string>
+    <string name="btn_ntag_write">WRITE</string>
+    <string name="btn_ntag_compatible_write">COMPATIBLE WRITE</string>
+    <string name="btn_ntag_read_count">READ COUNT</string>
+    <string name="btn_ntag_auth">AUTH</string>
+    <string name="btn_ntag_read_sign">READ SIGN</string>
+
+    <string name="btn_mful_ev1_open">OPEN</string>
+    <string name="btn_mful_ev1_close">CLOSE</string>
+    <string name="btn_mful_ev1_get_version">GET VERSION</string>
+    <string name="btn_mful_ev1_read">READ</string>
+    <string name="btn_mful_ev1_fast_read">FAST READ</string>
+    <string name="btn_mful_ev1_write">WRITE</string>
+    <string name="btn_mful_ev1_compatible_write">COMPATIBLE WRITE</string>
+    <string name="btn_mful_ev1_read_count">READ COUNT</string>
+    <string name="btn_mful_ev1_increase_count">INCREASE COUNT</string>
+    <string name="btn_mful_ev1_auth">AUTH</string>
+    <string name="btn_mful_ev1_read_sign">READ SIGN</string>
+    <string name="btn_mful_tear">TEAR</string>
+    <string name="btn_mful_ev1_vcsl">VCSL</string>
+
+    <string name="btn_mful_c_open">OPEN</string>
+    <string name="btn_mful_c_close">CLOSE</string>
+    <string name="btn_mful_c_read">READ</string>
+    <string name="btn_mful_c_write">WRITE</string>
+    <string name="btn_mful_c_compatible_write">COMPATIBLE WRITE</string>
+    <string name="btn_mful_c_auth">AUTH</string>
 
     <string-array name="pinpad_layout">
         <item>layout 0</item>

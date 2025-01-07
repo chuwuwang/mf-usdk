@@ -43,13 +43,9 @@ import com.morefun.yapi.emv.OnEmvProcessListener;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;
-import com.morefun.ysdk.sample.utils.CardUtil;
 import com.morefun.ysdk.sample.utils.EmvUtil;
 import com.morefun.ysdk.sample.utils.FileUtil;
-import com.morefun.ysdk.sample.utils.HexUtil;
 import com.morefun.ysdk.sample.utils.TcpService;
-import com.morefun.ysdk.sample.utils.TlvData;
-import com.morefun.ysdk.sample.utils.TlvDataList;
 import com.morefun.ysdk.sample.utils.ToastUtils;
 import com.morefun.ysdk.sample.utils.WakeLockUtil;
 

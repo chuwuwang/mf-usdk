@@ -1,11 +1,6 @@
 package com.morefun.ysdk.sample.fragment;
 
-import static com.morefun.ysdk.sample.utils.BytesUtil.bytes2HexString;
-import static com.morefun.ysdk.sample.utils.BytesUtil.hexString2Bytes;
-import static com.morefun.ysdk.sample.utils.BytesUtil.int2bytes;
-
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +11,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.morefun.yapi.card.at24cxx.IAT24CxxCard;
-import com.morefun.yapi.card.industry.SL4442Card;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;

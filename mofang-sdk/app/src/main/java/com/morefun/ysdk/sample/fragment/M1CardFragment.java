@@ -1,7 +1,6 @@
 package com.morefun.ysdk.sample.fragment;
 
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,22 +12,13 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.morefun.yapi.ServiceResult;
-import com.morefun.yapi.card.mifare.M1CardHandler;
-import com.morefun.yapi.card.mifare.M1CardOperType;
-import com.morefun.yapi.card.mifare.M1KeyTypeConstrants;
-import com.morefun.yapi.device.reader.icc.ICCSearchResult;
-import com.morefun.yapi.device.reader.icc.IccCardReader;
-import com.morefun.yapi.device.reader.icc.IccCardType;
-import com.morefun.yapi.device.reader.icc.IccReaderSlot;
-import com.morefun.yapi.device.reader.icc.OnSearchIccCardListener;
+import com.morefun.yapi.card.m1card.M1CardConstants;
 import com.morefun.ysdk.sample.R;
 import com.morefun.ysdk.sample.device.DeviceHelper;
 import com.morefun.ysdk.sample.utils.BytesUtil;
 import com.morefun.ysdk.sample.utils.DialogUtils;
 import com.morefun.ysdk.sample.utils.HexUtil;
 import com.morefun.ysdk.sample.utils.ToastUtils;
-
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,8 +40,9 @@ public class M1CardFragment extends Fragment {
     @BindView(R.id.et_data)
     EditText et_data;
 
+    private boolean bStop = false;
+
     private final String TAG = M1CardFragment.class.getName();
-    private IccCardReader rfReader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +60,7 @@ public class M1CardFragment extends Fragment {
                     return;
                 }
                 showResult(getString(R.string.tip_tap_card));
-                searchM1Card(new String[]{IccCardType.M1CARD});
+                searchM1Card();
                 break;
         }
     }
@@ -78,39 +69,40 @@ public class M1CardFragment extends Fragment {
     public void onPause() {
         super.onPause();
         try {
-            rfReader.stopSearch();
+            bStop = true;
+            DeviceHelper.getM1CardHandler().close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void searchM1Card(final String[] cardType) {
-        try {
-            DialogUtils.showProgressDialog(getActivity(), getString(R.string.tip_tap_card));
-            rfReader = DeviceHelper.getIccCardReader(IccReaderSlot.RFSlOT);
+    private void searchM1Card() {
+        bStop = false;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DialogUtils.showProgressDialog(getActivity(), getString(R.string.tip_tap_card));
+                    long currentTime = System.currentTimeMillis();
 
-            OnSearchIccCardListener.Stub listener = new OnSearchIccCardListener.Stub() {
-                @Override
-                public void onSearchResult(int retCode, Bundle bundle) throws RemoteException {
-                    rfReader.stopSearch();
-                    if (ServiceResult.Success == retCode) {
-                        String cardType = bundle.getString(ICCSearchResult.CARDTYPE);
-                        if (IccCardType.M1CARD.equals(cardType)) {
+                    while (true && !bStop) {
+                        DeviceHelper.getM1CardHandler().close();
+                        if (DeviceHelper.getM1CardHandler().open() == 0) {
                             m1Card();
+                            return;
                         }
-                    } else {
-                        DialogUtils.dismissProgressDialog(getActivity());
-                        DialogUtils.showAlertDialog(getActivity(), "Search Card Fail!");
+                        if (System.currentTimeMillis() - currentTime > 10 * 1000) {
+                            DialogUtils.showAlertDialog(getActivity(), "Timeout");
+                            DialogUtils.dismissProgressDialog(getActivity());
+                            return;
+                        }
+                        Thread.sleep(200);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            };
-
-            rfReader.searchCard(listener, 10, cardType);
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            showResult(e.toString());
-        }
+            }
+        }).start();
 
     }
 
@@ -122,9 +114,8 @@ public class M1CardFragment extends Fragment {
             byte[] uid = new byte[64];
 
             StringBuilder builder = new StringBuilder();
-            M1CardHandler m1CardHandler = DeviceHelper.getM1CardHandler(rfReader);
 
-            if (m1CardHandler == null) {
+            if (DeviceHelper.getM1CardHandler() == null) {
                 DialogUtils.dismissProgressDialog(getActivity());
                 DialogUtils.showAlertDialog(getActivity(), "M1 Card Handler Is Null");
                 return;
@@ -137,7 +128,7 @@ public class M1CardFragment extends Fragment {
 
             DialogUtils.setProgressMessage(getActivity(), "Authority...");
             builder.append("M1 Card Test\n");
-            int ret = m1CardHandler.authority(M1KeyTypeConstrants.KEYTYPE_A, sector, key, uid);
+            int ret = DeviceHelper.getM1CardHandler().authority(M1CardConstants.TYPE_A, sector, key, uid);
             showResult("M1 card authority:" + ret);
             if (ret != ServiceResult.Success) {
                 DialogUtils.dismissProgressDialog(getActivity());
@@ -169,65 +160,64 @@ public class M1CardFragment extends Fragment {
 
             DialogUtils.setProgressMessage(getActivity(), "Exchange...");
 
-            ret = m1CardHandler.readBlock(blockIndex, buf);
+            ret = DeviceHelper.getM1CardHandler().readBlock(blockIndex, buf);
             builder.append("Read Block[" + blockIndex + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(buf))
                     .append("\n");
 
-            ret = m1CardHandler.writeBlock(blockIndex, write);
+            ret = DeviceHelper.getM1CardHandler().writeBlock(blockIndex, write);
             builder.append("Write Block[" + (blockIndex) + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(write))
                     .append("\n");
 
-            ret = m1CardHandler.readBlock(blockIndex, buf);
+            ret = DeviceHelper.getM1CardHandler().readBlock(blockIndex, buf);
             builder.append("Read Block[" + (blockIndex) + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(buf))
                     .append("\n");
 
 
-            ret = m1CardHandler.writeBlock(blockIndex, operate);
+            ret = DeviceHelper.getM1CardHandler().writeBlock(blockIndex, operate);
             builder.append("Write Block[" + (blockIndex) + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(operate))
                     .append("\n");
 
-            ret = m1CardHandler.readBlock(blockIndex, buf);
+            ret = DeviceHelper.getM1CardHandler().readBlock(blockIndex, buf);
             builder.append("Read Block[" + (blockIndex) + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(buf))
                     .append("\n");
 
-            ret = m1CardHandler.operateBlock(M1CardOperType.INCREMENT, blockIndex, BytesUtil.intToBytes(10), 0);
+            ret = DeviceHelper.getM1CardHandler().operateBlock(M1CardConstants.OperateType.INCREMENT, blockIndex, BytesUtil.intToBytes(10), 0);
             builder.append("INCREMENT[" + (blockIndex) + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(BytesUtil.intToBytes(10)))
                     .append("\n");
 
-            ret = m1CardHandler.readBlock(blockIndex, buf);
+            ret = DeviceHelper.getM1CardHandler().readBlock(blockIndex, buf);
             builder.append("Read Block[" + (blockIndex) + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(buf))
                     .append("\n");
 
 
-            m1CardHandler.operateBlock(M1CardOperType.DECREMENT, blockIndex, BytesUtil.intToBytes(10), 0);
+            DeviceHelper.getM1CardHandler().operateBlock(M1CardConstants.OperateType.DECREMENT, blockIndex, BytesUtil.intToBytes(10), 0);
             builder.append("DECREMENT[" + (blockIndex) + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(BytesUtil.intToBytes(10)))
                     .append("\n");
 
-            ret = m1CardHandler.readBlock(blockIndex, buf);
+            ret = DeviceHelper.getM1CardHandler().readBlock(blockIndex, buf);
             builder.append("Read Block[" + (blockIndex) + "] (")
                     .append(ret).append(")")
                     .append(HexUtil.bytesToHexString(buf))
                     .append("\n");
 
             showResult(builder.toString());
-
-            rfReader.stopSearch();
+            DeviceHelper.getM1CardHandler().close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

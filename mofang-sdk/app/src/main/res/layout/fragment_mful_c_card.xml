@@ -29,72 +29,45 @@
                         android:id="@+id/btn_open"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_open" />
+                        android:text="@string/btn_mful_c_open" />
 
                     <Button
                         style="@style/ButtonStyle"
                         android:id="@+id/btn_close"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_close" />
+                        android:text="@string/btn_mful_c_close" />
 
-
-                    <Button
-                        style="@style/ButtonStyle"
-                        android:id="@+id/btn_get_version"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_get_version" />
 
                     <Button
                         style="@style/ButtonStyle"
                         android:id="@+id/btn_read"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_read" />
+                        android:text="@string/btn_mful_c_read" />
 
-                    <Button
-                        style="@style/ButtonStyle"
-                        android:id="@+id/btn_fast_read"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_fast_read" />
 
                     <Button
                         style="@style/ButtonStyle"
                         android:id="@+id/btn_write"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_write" />
+                        android:text="@string/btn_mful_c_write" />
 
                     <Button
                         style="@style/ButtonStyle"
                         android:id="@+id/btn_compatible_write"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_compatible_write" />
-
-                    <Button
-                        style="@style/ButtonStyle"
-                        android:id="@+id/btn_read_count"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_read_count" />
-
+                        android:text="@string/btn_mful_c_compatible_write" />
 
                     <Button
                         style="@style/ButtonStyle"
                         android:id="@+id/btn_auth"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_auth" />
+                        android:text="@string/btn_mful_c_auth" />
 
-                    <Button
-                        style="@style/ButtonStyle"
-                        android:id="@+id/btn_read_sign"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/btn_ntag_read_sign" />
 
                 </LinearLayout>
 

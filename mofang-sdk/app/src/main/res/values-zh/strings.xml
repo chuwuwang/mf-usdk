@@ -3,6 +3,7 @@
 
     <string name="menu_login">登录</string>
     <string name="menu_device">设备</string>
+    <string name="menu_system">系统</string>
     <string name="menu_beep">蜂鸣器</string>
     <string name="menu_led">LED</string>
     <string name="menu_print">打印</string>
@@ -30,6 +31,8 @@
     <string name="menu_usb_serial">底座串口</string>
     <string name="menu_TPM">TPM</string>
     <string name="menu_at24cxx">AT24Cxx</string>
+    <string name="menu_mful_c_card">MFUL C</string>
+    <string name="menu_mful_ev1_card">MFUL EV1</string>
 
     <string name="title_login_input_businessId">输入业务编号</string>
     <string name="title_serial_port_input">请输入要发送的数据</string>
@@ -66,6 +69,7 @@
     <string name="tip_dip_tap_card">请插卡或挥卡...</string>
     <string name="tip_tap_card">请挥卡...</string>
     <string name="tip_signature">请在下方空白签名，然后打印</string>
+    <string name="tip_dip_card">请插卡...</string>
 
     <string name="btn_device_info">设备信息</string>
     <string name="btn_device_install">安装</string>
@@ -168,6 +172,39 @@
     <string name="btn_emulate_card_process">处理</string>
 
     <string name="title_tpm_input">请输入TPM命令</string>
+
+    <string name="btn_ntag_open">打开</string>
+    <string name="btn_ntag_close">关闭</string>
+    <string name="btn_ntag_get_version">获取版本</string>
+    <string name="btn_ntag_read">读取</string>
+    <string name="btn_ntag_fast_read">快速读取</string>
+    <string name="btn_ntag_write">写入</string>
+    <string name="btn_ntag_compatible_write">兼容写入</string>
+    <string name="btn_ntag_read_count">读计数</string>
+    <string name="btn_ntag_auth">认证</string>
+    <string name="btn_ntag_read_sign">读签名</string>
+
+    <string name="btn_mful_ev1_open">打开</string>
+    <string name="btn_mful_ev1_close">关闭</string>
+    <string name="btn_mful_ev1_get_version">获取版本</string>
+    <string name="btn_mful_ev1_read">读取</string>
+    <string name="btn_mful_ev1_fast_read">快速读取</string>
+    <string name="btn_mful_ev1_write">写入</string>
+    <string name="btn_mful_ev1_compatible_write">兼容写入</string>
+    <string name="btn_mful_ev1_read_count">读数目</string>
+    <string name="btn_mful_ev1_increase_count">增加数目</string>
+    <string name="btn_mful_ev1_auth">认证</string>
+    <string name="btn_mful_ev1_read_sign">读签名</string>
+    <string name="btn_mful_tear">撕裂检测</string>
+    <string name="btn_mful_ev1_vcsl">VCSL</string>
+
+    <string name="btn_mful_c_open">打开</string>
+    <string name="btn_mful_c_close">关闭</string>
+    <string name="btn_mful_c_read">读取</string>
+    <string name="btn_mful_c_write">写入</string>
+    <string name="btn_mful_c_compatible_write">兼容写</string>
+    <string name="btn_mful_c_auth">认证</string>
+
 
     <string-array name="pinpad_layout">
         <item>layout 0</item>

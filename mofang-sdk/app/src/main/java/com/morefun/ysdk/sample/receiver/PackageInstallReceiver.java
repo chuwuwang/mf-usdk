@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
 import com.morefun.ysdk.sample.MyApplication;
 import com.morefun.ysdk.sample.utils.ToastUtils;
+
 import java.util.Objects;
 
 public class PackageInstallReceiver extends BroadcastReceiver {

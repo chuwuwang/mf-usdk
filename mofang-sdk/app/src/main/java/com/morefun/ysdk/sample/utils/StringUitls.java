@@ -1,6 +1,10 @@
 package com.morefun.ysdk.sample.utils;
 
+import android.os.Bundle;
 import android.text.TextUtils;
+
+import com.morefun.yapi.engine.DeviceInfoConstrants;
+import com.morefun.ysdk.sample.device.DeviceHelper;
 
 import java.util.ArrayList;
 
@@ -36,5 +40,15 @@ public class StringUitls {
             }
         }
         return ServiceCode24;
+    }
+
+    public static String getDeviceModel() {
+        try {
+            Bundle devInfo = DeviceHelper.getDeviceService().getDevInfo();
+            return devInfo.getString(DeviceInfoConstrants.COMMOM_MODEL_EX);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

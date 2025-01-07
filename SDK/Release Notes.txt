@@ -1,3 +1,53 @@
+Release notes for V6.01.02
+Date: 2024/12/31
+
+1.Add Navibar separate control interface
+
+Release notes for V6.01.01
+Date: 2024/12/24
+
+1. Fix 9F41 TAG issue
+2. Card search interface optimization
+
+
+Release notes for V5.95.01
+Date: 2024/12/13
+
+1. Support dukpt tr31
+
+
+Release notes for V5.93.03
+Date: 2024/12/06
+
+1. Fixed an issue where the power button is off and the password cannot be cancelled
+2. Fixed NTAG card close fail.
+
+Release notes for V5.93.01
+Date: 2024/11/26
+
+1. Update emv library to support cvm setting
+2. Add and delete key interfaces in ped module
+
+
+Release notes for V5.92.03
+Date: 2024/11/21
+
+1. Fixed an issue where disable the status bar prevented the setting application from opening
+
+
+Release notes for V5.92.02
+Date: 2024/11/13
+
+1. Increased the apdu send cache and fixed 255 data length issue
+
+
+Release notes for V5.92.01
+Date: 2024/11/11
+
+1. Add GPS on/off interface
+2. Add grant permission interface
+3. Add the power key to enable or disable the interface
+
 Release notes for V5.91.10
 Date: 2024/11/06
 

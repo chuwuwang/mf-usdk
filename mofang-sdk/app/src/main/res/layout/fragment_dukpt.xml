@@ -86,12 +86,36 @@
                             android:textSize="@dimen/size_text" />
 
                         <Button
+                            android:id="@+id/btn_dukptTR31"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:text="DUKPT TR31"
+                            android:textSize="@dimen/size_text" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
                             android:id="@+id/btn_login"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_margin="5dp"
                             android:layout_weight="1"
                             android:text="@string/btn_dukpt_login"
+                            android:textSize="@dimen/size_text" />
+
+                        <Button
+                            android:visibility="invisible"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
                             android:textSize="@dimen/size_text" />
 
                     </LinearLayout>

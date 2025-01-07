@@ -236,99 +236,58 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_layout"
-                android:text="Test Times"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/size_text">
-
-            </TextView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right|center_vertical"
-                android:orientation="horizontal">
-
-                <com.morefun.ysdk.sample.view.ClearEditText
-                    android:id="@+id/et_testTimes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_layout"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_edittext"
-                    android:drawablePadding="@dimen/margin_layout"
-                    android:gravity="center|left"
-                    android:hint="Times"
-                    android:imeOptions="actionNext"
-                    android:inputType="number"
-                    android:text="10"
-                    android:maxLength="8"
-                    android:padding="@dimen/margin_layout"
-                    android:singleLine="true"
-                    android:textColor="@color/gray"
-                    android:textColorHint="@color/gray"
-                    android:textSize="@dimen/size_text" />
-
-            </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_layout"
                 android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/btn_powerOn"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_text"
-                    android:text="POWER ON" />
+                    android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/btn_powerOff"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_text"
-                    android:text="POWER OFF" />
+                    <Button
+                        android:id="@+id/btn_powerOn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="POWER ON" />
 
-                <Button
-                    android:id="@+id/btn_setRFLevel"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
-                    android:text="RF LEVEL" />
+                    <Button
+                        android:id="@+id/btn_powerOff"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="POWER OFF" />
 
-                <Button
-                    android:id="@+id/btn_setPower"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
-                    android:text="SET POWER" />
+                    <Button
+                        android:id="@+id/btn_setRFLevel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="RF LEVEL" />
 
-                <Button
-                    android:id="@+id/btn_start"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
-                    android:text="START" />
+                    <Button
+                        android:id="@+id/btn_setStrength"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="SET STRENGTH" />
 
+                    <Button
+                        android:id="@+id/btn_start"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="START" />
 
-                <Button
-                    android:id="@+id/btn_test1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
-                    android:text="POWER ON->READ->POWER OFF" />
-
-                <Button
-                    android:id="@+id/btn_test2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/size_text"
-                    android:text="POWER ON->LOOP READ->POWER OFF" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -339,7 +298,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_layout"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/size_tip">
+                android:textSize="18sp">
 
             </TextView>
 

@@ -22,7 +22,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="Address"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/size_text">
+                android:textSize="16sp">
 
             </TextView>
 
@@ -43,12 +43,12 @@
                     android:gravity="center|left"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:text="0"
                     android:padding="10dp"
                     android:singleLine="true"
+                    android:text="0"
                     android:textColor="@color/gray"
                     android:textColorHint="@color/gray"
-                    android:textSize="@dimen/size_text" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <TextView
@@ -57,7 +57,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="Read Len"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/size_text">
+                android:textSize="16sp">
 
             </TextView>
 
@@ -84,7 +84,7 @@
                     android:text="10"
                     android:textColor="@color/gray"
                     android:textColorHint="@color/gray"
-                    android:textSize="@dimen/size_text"/>
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -94,7 +94,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="Data"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/size_text">
+                android:textSize="16sp">
 
             </TextView>
 
@@ -121,7 +121,7 @@
                     android:text=""
                     android:textColor="@color/gray"
                     android:textColorHint="@color/gray"
-                    android:textSize="@dimen/size_text" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -131,7 +131,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="Type"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/size_text">
+                android:textSize="16sp">
 
             </TextView>
 
@@ -158,7 +158,7 @@
                     android:text="10"
                     android:textColor="@color/gray"
                     android:textColorHint="@color/gray"
-                    android:textSize="@dimen/size_text" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -168,7 +168,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="Key"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/size_text">
+                android:textSize="16sp">
 
             </TextView>
 
@@ -194,7 +194,7 @@
                     android:text=""
                     android:textColor="@color/gray"
                     android:textColorHint="@color/gray"
-                    android:textSize="@dimen/size_text" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -209,21 +209,45 @@
                     android:orientation="horizontal">
 
                     <Button
+                        style="@style/ButtonStyle"
+                        android:id="@+id/btn_open"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="OPEN" />
+
+                    <Button
+                        style="@style/ButtonStyle"
+                        android:id="@+id/btn_close"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="CLOSE" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_powerOn"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="POWER ON" />
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_powerOff"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="POWER OFF" />
                 </LinearLayout>
 
@@ -233,22 +257,22 @@
                     android:orientation="horizontal">
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_verify"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="VERIFY" />
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_present"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
-                        android:text="IS CARD PRESENT"
-                        android:textSize="@dimen/size_text"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:text="IS CARD PRESENT" />
 
                 </LinearLayout>
 
@@ -258,21 +282,21 @@
                     android:orientation="horizontal">
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_mmRead"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="MM READ" />
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_mmWrite"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="MM WRITE" />
                 </LinearLayout>
 
@@ -282,21 +306,21 @@
                     android:orientation="horizontal">
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_pmRead"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="PM READ" />
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_pmWrite"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="PM WRITE" />
                 </LinearLayout>
 
@@ -306,21 +330,21 @@
                     android:orientation="horizontal">
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_smRead"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="SM READ" />
 
                     <Button
+                        style="@style/ButtonStyle"
                         android:id="@+id/btn_smWrite"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/size_text"
                         android:text="SM WRITE" />
                 </LinearLayout>
 
@@ -332,8 +356,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_layout"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/size_tip">
-            </TextView>
+                android:textSize="@dimen/size_tip"></TextView>
 
         </LinearLayout>
 
